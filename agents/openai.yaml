@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dialogue Learning"
+  short_description: "Turn conversations into durable, testable knowledge"
+  default_prompt: "Distill this conversation into concepts, errors, open questions, evidence, and review exercises. Preserve uncertainty and show me what to confirm before saving durable knowledge."
