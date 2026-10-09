@@ -1,57 +1,52 @@
 ---
 name: dialogue-learning
 description: >-
-  Turn human-AI conversation history into traceable learning artifacts:
-  concepts, solved and unsolved questions, error lessons, decisions,
-  verification tasks, and review prompts. Use when the user asks to learn
-  from a conversation, preserve useful history, review past work, or reduce
-  dependence on repeated AI answers.
+  将当前聊天或用户指定的历史记录整理为可回看、可学习的笔记：恢复背景，解释真实困惑，突出关键纠错，并保留有价值的主题入口。适用于“整理这次对话”“回看一周前的聊天”“生成学习笔记或目录”“记录踩坑”“合并笔记”及明确的复习请求；普通问答或排障本身不触发整理。
 ---
 
-# Dialogue Learning
+# Dialogue Learning · 对话学习笔记
 
-Treat the conversation as a learning record, not as disposable chat. The output must help the user understand, verify, recall, and eventually perform relevant work without the transcript.
+让用户隔一段时间仍能找回问题、理解过程并继续学习。用用户的语言写作。默认先讲清主线，再给有用的查找入口；直接回答并充分解释，不把笔记写成审计报告。
 
-## Choose a mode
+## 模式与范围
 
-- **Capture**: extract the current conversation when the user says to save, learn from, or distill it.
-- **History**: inspect an available conversation export or history tool, then process sessions in bounded chunks. Never pretend to have read history that is not available in the current environment.
-- **Review**: quiz the user from saved items. Ask for an explanation or prediction before revealing the answer; grade the explanation and update mastery.
-- **Distill**: compare several saved sessions, merge duplicates, resolve contradictions, and promote only repeatedly useful knowledge to durable project or personal rules.
+- **整理 Capture（默认）**：整理当前选中的这一条聊天，不只总结最近几轮。若平台提供当前线程的原生历史读取功能，只读取该线程并覆盖从最早到最新的消息；没有该能力时使用平台直接提供的内容，不扫描本机记录补齐。
+- **历史 History**：只读取用户明确指定的聊天、导出记录或附件；不自动寻找相邻聊天或同主题资料。
+- **合并 Distill**：合并用户指定的笔记，沿用已有来源和标识，保留有意义的更正、冲突与未解决事项。
+- **复习 Review**：仅在用户明确要求时出题，先等解释、预测或诊断选择，再反馈。不把笔记正文改成问卷。
 
-If the user did not choose a mode, use Capture for the current conversation and offer Review for the most important gaps.
+Capture 的资料边界是当前选中的聊天及其明确附带的文件。不要搜索本机会话数据库或日志、其他聊天或续接会话、项目仓库、Git 记录、带教文件或外部资料来补齐内容；用户明确要求核查某项资料时再按指定范围处理。若平台只提供部分线程消息，简短说明缺失范围，不要自行扫描本机记录补齐。用户指定主题、目录或篇幅时优先遵循。
 
-## Capture workflow
+## 整理与选材
 
-1. Identify the user's goal, starting understanding, concrete outcomes, and important corrections.
-2. Separate observations from interpretations. Record claims from the AI as hypotheses until supported by a command, document, experiment, or user confirmation.
-3. Extract only durable material into the schema in [references/artifact-schema.md](references/artifact-schema.md): concepts, questions, error lessons, decisions, procedures, and exercises.
-4. For each artifact, include a short source pointer to the conversation turn or transcript location. Preserve the original transcript separately when available.
-5. Mark what is solved, partially understood, unverified, contradicted, or still open. Do not convert a plausible explanation into a fact.
-6. Create at least one teach-back or prediction prompt for each important new concept or recurring error. Prefer a small practical task over a recall-only question.
-7. Present a compact draft for user confirmation before writing durable memory, project rules, or global instructions. A summary may be shown without confirmation; durable writes require confirmation.
+需要详细版式示例或整理成跨会话文档时，再读取 [笔记结构与表达示例](references/note-format.md)；普通聊天笔记按本文件的默认规则完成。
 
-## Learning quality rules
+1. 找出用户目标、起点、真实困惑、关键尝试、纠正和最后进展。用一段“回到当时”恢复背景，避免重复概述。
+2. 内部盘点有意义的话题，合并反复问答与同一故障的重试。正文围绕学习主线分组，标题可用用户原问题，但段落和表格直接给答案。不要按每轮、文件或报错拆成一个主题。
+3. 优先展开用户反复混淆、能迁移复用、改变理解、解决实际问题或支持重要决策的内容。保留理解问题所需的原因、失败路径和有效处理；不要为总结而重新审计项目或复跑操作。
+4. 通过具体例子、对应表和数据流解释关键区别。加粗突出曾经错误的认识的正确替代表述、最值得记住的结论及可复用方法。不仅写“需要纠正”，还要清楚写出正确理解。
+5. 正文按需讲深，不规定固定主题数或篇幅。覆盖有意义的主题不等于逐条复述；主线保留理解和接续学习所需的过程，重复内容与操作噪音合并。
+6. 长对话在末尾附简短查找入口，收录正文未展开但值得回看的旁支。入口帮助定位，不替代正文，也不重复正文解释。
+7. 最后集中写下一步。正文讲解、查找目录和行动项各司其职，同一事实只完整解释一次。
 
-- Do not reward passive agreement. Ask the user to explain the cause, predict an outcome, or choose a diagnostic step before giving the explanation.
-- Distinguish “the task was completed” from “the user can reproduce it.” Track both separately.
-- Preserve failed attempts. The failed assumption, observed signal, and correction are often more reusable than the final command.
-- Link related questions and concepts instead of repeating them in every session.
-- When sources conflict, show the conflict and propose a verification step; never silently pick one.
-- Keep personal preferences separate from technical facts and project-specific rules.
-- Avoid saving secrets, tokens, private credentials, or unnecessary personal data from transcripts.
+## 事实、解释与来源
 
-## Output and storage
+- 把“对话里讨论过什么”和“技术上是否已由代码或实验证实”分开。重要的用户理解或助手解释即使未重新核验，也应保留为历史讨论，并在必要处简短说明状态；不要因未独立验证而删掉整段，也不要把讨论内容写成已证实事实。
+- 使用当前聊天中的原消息、代码片段、命令输出及明确附带的文件作为依据。不要为了核实每个名称、数字或结论而搜索聊天外资料。只有用户明确要求做代码／事实核查时，才扩大到用户指定的来源。
+- 不确定性就近、简短说明，并保持表格与正文一致；不要在每段重复“未核实”。来源提示只在能帮助回看时附上，不要求逐主题堆来源。
+- 不把整理时新增的解释说成历史结论；新想到的代码风险不要扩展成审计，必要时列为下一步。
+- 尊重回顾范围。用户要总结某个技术／求职主题时，不把后来关于笔记格式或 skill 的元讨论混入技术主线；只有用户要求回顾整段聊天时，才把它作为独立主题列入目录。
+- 环境、版本、地址与结果属于当时快照。命令注明执行位置和前提，历史无效或不安全命令只能作为失败记录，不能推荐复用。
+- 操作完成与学习掌握分开；未见独立复现或解释，不认定已掌握。只在有助于接续学习时说明，不给每项强制打分。
 
-Use a user-selected knowledge directory. If none exists, propose `knowledge/` in the active project for project material and a separate user directory for personal learning. Keep these layers distinct:
+## 输出与存储
 
-- raw transcript or source pointer
-- session record
-- durable artifacts
-- review history and unresolved questions
+- 默认聊天预览，不写文件、不自动测验、不写全局记忆或项目指令。
+- 用户明确要求保存、写文件或更新笔记时，直接完成已授权写入，无需重复确认。使用约定目录或用户指定位置；未指定时遵循当前环境的输出位置要求。
+- 小规模可用一份 Markdown；跨会话累积结构见参考文件。不要为了编号拆成大量卡片；预览不使用 A01／N01／C01 等多套交叉编号。
+- 更新前读取已有笔记。已授权追加或更正可直接做并报告；实质冲突保留证据和适用条件，不静默删除旧结论。对外发布、修改全局指令需要相应授权。
+- 默认保留来源定位，原始对话仅在明确要求时导出。排除密码、私钥、令牌、认证链接及无关个人信息；复现需要的非秘密环境信息可以适量保留。
 
-Use readable Markdown with stable IDs so later sessions can cite and update an artifact. Do not silently edit existing durable entries: show the proposed merge, correction, or retirement first.
+## 交付检查
 
-## Commands expressed in natural language
-
-Recognize requests equivalent to: “提炼这次对话”, “整理我的错误”, “我真的学会了吗”, “复习最近的知识”, “找出还没解决的问题”, “把这些对话合并成知识库”, and “这个结论的来源是什么”. Respond with the appropriate mode and keep the interaction focused on learning outcomes rather than producing a longer transcript summary.
+开头能恢复经历；重点讲清且可接着学；不只总结最近几轮，也不扩大到当前聊天之外的资料；重要历史讨论没有因未重新核验而丢失；不确定性简短且一致；旁支有用时可查；没有新增审计、重复免责声明、秘密或未授权保存。

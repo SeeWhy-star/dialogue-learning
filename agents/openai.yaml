@@ -1,4 +1,4 @@
 interface:
-  display_name: "Dialogue Learning"
-  short_description: "Turn conversations into durable, testable knowledge"
-  default_prompt: "Distill this conversation into concepts, errors, open questions, evidence, and review exercises. Preserve uncertainty and show me what to confirm before saving durable knowledge."
+  display_name: "对话学习笔记"
+  short_description: "恢复对话背景，解释关键困惑与纠错，整理有用的旁支入口"
+  default_prompt: "使用 $dialogue-learning 整理当前聊天。"
